@@ -50,7 +50,12 @@ templ = {
       { 'value' => 'Founder', 'positive' => true },
       { 'value' => 'President', 'positive' => true },
       { 'value' => 'Director', 'positive' => true },
-  ],
+      { 'value' => 'Human Resources Manager', 'positive' => true },
+      { 'value' => 'HR Manager', 'positive' => true },
+      { 'value' => 'Recruiting Manager', 'positive' => true },
+      # job positions to exclude
+      { 'value' => 'Vice', 'positive' => false },
+    ],
   #'states' => [
   #    # locations to include
   #    { 'value' => 'NC', 'positive' => true }, # North Carolina
@@ -104,13 +109,14 @@ batches = cnames.each_slice(BATCH_SIZE).to_a
 l.logf 'done'.green + " (#{batches.count.to_s.blue} batches found)"
 
 batches.each_with_index do |batch, i|
-break if i > 0
   l.logs "Uploading batch #{i}... "
   h = templ.clone
   name = "#{parser.value('name')} - #{batch.size} companies - #{i+1}/#{batches.count}"
   ret = client.get(name)
   if ret['status'] != 'success'
     l.logf "error: #{ret['status']}".red
+  elsif [5,10].include?(i) == false
+    l.logf 'skipped'.yellow
   elsif ret['searches'].size > 0
     l.logf 'already exists'.yellow
   else
