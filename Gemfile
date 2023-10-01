@@ -12,6 +12,7 @@ gem 'simple_command_line_parser', '~>1.1.2'
 #gem 'pampa', '~>2.0.29'
 #gem 'my-dropbox-api', '~>1.0.1'
 gem 'bots', '~>1.0.1'
+gem 'freeleadsdata-api', '~>1.0.1'
 
 # Other gems needed for running mysaas
 gem 'colorize', '~>0.8.1'
