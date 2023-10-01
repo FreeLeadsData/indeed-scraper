@@ -14,11 +14,11 @@ parser = BlackStack::SimpleCommandLineParser.new(
     :mandatory=>true, 
     :description=>'Name of the search(es) that will be created. Mandatory.', 
     :type=>BlackStack::SimpleCommandLineParser::STRING,
-  }, {
-    :name=>'template', 
-    :mandatory=>true, 
-    :description=>'JSON file with the search template to add the list of companies. Mandatory.', 
-    :type=>BlackStack::SimpleCommandLineParser::STRING,
+  #}, {
+  #  :name=>'template', 
+  #  :mandatory=>true, 
+  #  :description=>'JSON file with the search template to add the list of companies. Mandatory.', 
+  #  :type=>BlackStack::SimpleCommandLineParser::STRING,
   }, {
     :name=>'files', 
     :mandatory=>false, 
@@ -31,6 +31,42 @@ parser = BlackStack::SimpleCommandLineParser.new(
 l = BlackStack::LocalLogger.new('push.log')
 BATCH_SIZE = 100
 cnames = []
+templ = {
+  #'name' => ,
+  'status' => true,
+  'stop_limit' => 400000000,
+  'earning_per_verified_email' => 0.018,
+  'verify_email' => true, 
+  'direct_phone_number_only' => false,
+  'auto_drain' => true,
+  'keywords' => [
+      # keywords to include
+      { 'value' => '[company_name]', 'type' => 0 },
+  ],
+  'job_titles' => [
+      # job positions to include
+      { 'value' => 'Owner', 'positive' => true },
+      { 'value' => 'CEO', 'positive' => true },
+      { 'value' => 'Founder', 'positive' => true },
+      { 'value' => 'President', 'positive' => true },
+      { 'value' => 'Director', 'positive' => true },
+  ],
+  #'states' => [
+  #    # locations to include
+  #    { 'value' => 'NC', 'positive' => true }, # North Carolina
+  #],
+  'company_headcounts' => [
+      # headcounts to include
+      { 'value' => '1 to 10', 'positive' => true },
+      { 'value' => '11 to 25', 'positive' => true },
+      { 'value' => '26 to 50', 'positive' => true },
+  ],
+}
+
+# creating the client
+l.logs "Creating the client... "
+client = BlackStack::FreeLeadsData::API.new(FREELEADSDATA_API_KEY)
+l.logf 'done'.green
 
 # list all files into the csv folder with name matching with /#{PARSER.value('files')}/ 
 l.logs "Loading files... "
@@ -66,3 +102,21 @@ l.logf 'done'.green
 l.logs 'Building batches... '
 batches = cnames.each_slice(BATCH_SIZE).to_a
 l.logf 'done'.green + " (#{batches.count.to_s.blue} batches found)"
+
+batches.each_with_index do |batch, i|
+break if i > 0
+  l.logs "Uploading batch #{i}... "
+  h = templ.clone
+  name = "#{parser.value('name')} - #{batch.size} companies - #{i+1}/#{batches.count}"
+  ret = client.get(name)
+  if ret['status'] != 'success'
+    l.logf "error: #{ret['status']}".red
+  elsif ret['searches'].size > 0
+    l.logf 'already exists'.yellow
+  else
+    h['name'] = name
+    h['company_names'] = batch.map { |s| { 'value' => s, 'positive' => true } }
+    client.new(h)
+    l.logf 'done'.green
+  end
+end
