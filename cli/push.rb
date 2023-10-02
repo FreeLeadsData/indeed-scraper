@@ -115,8 +115,8 @@ batches.each_with_index do |batch, i|
   ret = client.get(name)
   if ret['status'] != 'success'
     l.logf "error: #{ret['status']}".red
-  elsif [5,10].include?(i) == false
-    l.logf 'skipped'.yellow
+  #elsif [5,10].include?(i) == false
+  #  l.logf 'skipped'.yellow
   elsif ret['searches'].size > 0
     l.logf 'already exists'.yellow
   else
