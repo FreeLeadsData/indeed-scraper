@@ -35,8 +35,16 @@ wget https://raw.githubusercontent.com/leandrosardi/my.saas/main/cli/install.sh
 bash --login install.sh
 ```
 
-You need the `--login` parameter for running RVM and Ruby, as is explained [here](https://stackoverflow.com/questions/9336596/rvm-installation-not-working-rvm-is-not-a-function).
+**Note:** In the code above, you need the `--login` parameter for running RVM and Ruby, as is explained [here](https://stackoverflow.com/questions/9336596/rvm-installation-not-working-rvm-is-not-a-function).
 
+
+Additionally to the environment, you need **Chrome** and **ChromeDriver** for running the scraper. Use the installer of our [Bots library](https://github.com/leandrosardi/bots).
+
+
+```bash
+wget https://raw.githubusercontent.com/leandrosardi/bots/main/install.sh
+bash --login install.sh
+```
 
 ## 2. Installation
 
@@ -55,11 +63,27 @@ cd ~/code/indeed-scraper
 bundler update
 ```
 
-
 ## 3. Indeed Scraping
 
-_(pending)_
+First, create a text file with all the Indeed URLs you want to scrape.
 
+```bash
+nano ~/code/indeed-scraper/urls/florida.txt
+```
+
+Second, run the scraping.
+
+```bash
+cd ~/code/indeed-scraper
+ruby scrape.rb tag=florida
+```
+
+Finally, and after the scraping is done, find the CSV files.
+
+```bash
+cd ~/code/indeed-scraper
+ls ./csv/*.florida.csv
+```
 
 ## 4. Results Submission
 
