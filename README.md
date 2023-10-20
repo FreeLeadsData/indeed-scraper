@@ -4,6 +4,12 @@
 
 [FreeLeadsData](https://freeleadsdata.com) Extensions to Scrape Indeed Searches and Push Results to [FreeLeadsData.com](https://freeleadsdata.com)
 
+**Dashboard:**
+
+![Indeed-Scraper Dahsboard](./doc/dashboard.png)
+
+**Workflow:**
+
 ![Indeed-Scraper Workflow](./doc/workflow.png)
 
 **Outline:**
