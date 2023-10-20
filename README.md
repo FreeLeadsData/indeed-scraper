@@ -78,45 +78,42 @@ cd ~/code/indeed-scraper
 ruby scrape.rb tag=florida
 ```
 
-Finally, and after the scraping is done, find the CSV files.
+Finally, and after the scraping is done, find the CSV file.
 
 ```bash
 cd ~/code/indeed-scraper
-ls ./csv/*.florida.csv
+ls ./csv/florida.csv
 ```
 
 ## 4. Results Submission
 
-In the `./csv` folder of this project you place all the CSV files scraped in the previous section.
+In the `csv` folder of this project you place all the CSV files scraped in the previous section.
 
-The process of setting up **FreeLeadsData** searches for enrich your list of companies is composed by 2 steps:
+The process of setting up **FreeLeadsData** searches for enrich your list of companies is this:
 
-1. list curation, and
-2. list submission.
-
-**List Curation**
-
-Usually you will want to:
-
-1. join all the CSVs into one single **results-set**;
-2. build a list with unique names of companies, removing duplications;
-and
-3. remove some fake company names (like `company` or `llc`).
-
-**List Submission**
-
-You split the **curated list of companies** into chunks of `N` company names each one, and you will create `M` searches.
-
-The reason of such a splitting is because **FreeLeadsData** accept up to 100 company names per search.
-
-**Running Sumission**
-
-```ruby
-
+```bash
+cd ~/code/indeed-scraper
+ruby push.rb tag=florida
 ```
+
+Such a command does the following:
+
+- Creates list of unique companies
+- Split the list in batches of `N` results each one.
+- Submits one FreeLeadsData search for each batch.
 
 ## 5. Enrichment Curation
 
-Since you splitted the list of companies in the previous section, you have to download the many **result-files** from FreeLeadsData and join the results.
+Since you splitted the list of companies in the previous section, you have to download the many **result-files** from **FreeLeadsData** and join the results.
 
-_(pending)_
+```bash
+cd ~/code/indeed-scraper
+ruby join.rb tag=florida
+```
+
+Such a command does the following:
+
+- download the many **result-files** from **FreeLeadsData**.
+- join all the results into one single file.
+- remove duplications of (job position, company names) in the new file.
+- append the job position listed in indeed (if there are many, choosing the first one).
