@@ -63,6 +63,14 @@ cd ~/code/indeed-scraper
 bundler update
 ```
 
+Finally, create the `config.rb` file and edit it.
+
+```bash
+cd ~/code/indeed-scraper
+cp ./config.template.rb config.rb
+nano ./config.rb
+```
+
 ## 3. Indeed Scraping
 
 First, create a text file with all the Indeed URLs you want to scrape.
