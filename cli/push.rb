@@ -75,7 +75,7 @@ l.logf 'done'.green + " (#{batches.count.to_s.blue} batches found)"
 batches.each_with_index do |batch, i|
   l.logs "Uploading batch #{i}... "
   h = templ.clone
-  name = "#{parser.value('name')} - #{batch.size} companies - #{i+1}/#{batches.count}"
+  name = "#{parser.value('id')} - #{batch.size} companies - #{i+1}/#{batches.count}"
   ret = client.get(name)
   if ret['status'] != 'success'
     l.logf "error: #{ret['status']}".red
