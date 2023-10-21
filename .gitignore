@@ -1,4 +1,11 @@
+!/urls/demo.txt
+/urls/*.txt
+
+!/csv/demo.csv
+/csv/*.csv
+
 *.log
-*.csv
 *.json
+
 config.rb
+
