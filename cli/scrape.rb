@@ -26,6 +26,7 @@ l.log 'INDEED SCRAPER'.yellow
 
 l.logs 'Tag: ' 
 tag = parser.value('tag').to_s
+output_filename = "../csv/#{tag}.csv"
 l.logf tag.blue
 
 l.logs 'initialize IndeedBot... '
@@ -38,7 +39,7 @@ a = File.readlines("../urls/#{tag}.txt").map { |line| line.strip }
 l.logf 'done'.green + " (#{a.length.to_s.blue} URLs)"
 
 a.each { |s|
-    output_filename = "../csv/#{tag}.csv"
+    l.logs "searching: #{s.to_s.blue}... "
     search = s
     start = 0
     while start <= 640
@@ -46,17 +47,18 @@ a.each { |s|
         begin
             url = "#{search}&start=#{start}"
             ret = bot.results(url)
-            CSV.open("./#{output_filename}.all.csv", 'a+b') { |csv|
+            CSV.open("./#{output_filename}", 'a+b') { |csv|
                 csv << ['title', 'url', 'company', 'location', 'salary', 'posted', 'snippets']
                 ret.each { |h|
                     csv << [h[:title], h[:url], h[:company], h[:location], h[:salary], h[:posted], h[:snippets].join(' / ')]
                 }        
             }
-            l.done
+            l.logf 'done'.green + " (#{ret.length.to_s.blue} results)"
         rescue => e
             l.logf "error: #{e.message}".red
         end
         # increase start
         start += 10
     end
+    l.logf 'done'.green
 }
