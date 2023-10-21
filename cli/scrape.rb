@@ -11,9 +11,9 @@ require_relative '../config.rb'
 
 # 
 parser = BlackStack::SimpleCommandLineParser.new(
-  :description => 'This command upload a list of companies to FreeLeadsData for enrichment.', 
+  :description => 'This command scrapes Indeed searches and place the job-postings in the file /csv/#{id}.csv.', 
   :configuration => [{
-    :name=>'tag', 
+    :name=>'id', 
     :mandatory=>true, 
     :description=>'Label the searches we are running. Mandatory.', 
     :type=>BlackStack::SimpleCommandLineParser::STRING,
@@ -24,18 +24,18 @@ l = BlackStack::LocalLogger.new('scrape.log')
 
 l.log 'INDEED SCRAPER'.yellow
 
-l.logs 'Tag: ' 
-tag = parser.value('tag').to_s
-output_filename = "../csv/#{tag}.csv"
-l.logf tag.blue
+l.logs 'ID: ' 
+id = parser.value('id').to_s
+output_filename = "../csv/#{id}.csv"
+l.logf id.blue
 
 l.logs 'initialize IndeedBot... '
 bot = BlackStack::Bots::Indeed.new(nil)
 l.logf 'done'.green
 
-# load urls from ../urls/#{tag}.txt
+# load urls from ../urls/#{id}.txt
 l.logs 'Load URLs... '
-a = File.readlines("../urls/#{tag}.txt").map { |line| line.strip }
+a = File.readlines("../urls/#{id}.txt").map { |line| line.strip }
 l.logf 'done'.green + " (#{a.length.to_s.blue} URLs)"
 
 a.each { |s|

@@ -8,65 +8,29 @@ require_relative '../config.rb'
 
 # 
 parser = BlackStack::SimpleCommandLineParser.new(
-  :description => 'This command upload a list of companies to FreeLeadsData for enrichment.', 
+  :description => 'This command takes all the job-postings in the file /csv/#{id}.csv, and upload them to FreeLeadsData for enrichment.', 
   :configuration => [{
-    :name=>'name', 
+    :name=>'id', 
     :mandatory=>true, 
-    :description=>'Name of the search(es) that will be created. Mandatory.', 
+    :description=>'Label the searches we are running. Mandatory.', 
     :type=>BlackStack::SimpleCommandLineParser::STRING,
-  #}, {
-  #  :name=>'template', 
-  #  :mandatory=>true, 
-  #  :description=>'JSON file with the search template to add the list of companies. Mandatory.', 
-  #  :type=>BlackStack::SimpleCommandLineParser::STRING,
-  }, {
-    :name=>'files', 
-    :mandatory=>false, 
-    :description=>'Filter the files you want to process. Default: .*', 
-    :type=>BlackStack::SimpleCommandLineParser::STRING,
-    :default => '.*',
   }]
 )
 
 l = BlackStack::LocalLogger.new('push.log')
+
+l.log 'PUSH TO FREELEADSDATA'.yellow
+
+l.logs 'ID: ' 
+id = parser.value('id').to_s
+output_filename = "../csv/#{id}.csv"
+l.logf id.blue
+
+l.logs "Initializing variables... "
 BATCH_SIZE = 100
 cnames = []
-templ = {
-  #'name' => ,
-  'status' => true,
-  'stop_limit' => 400000000,
-  'earning_per_verified_email' => 0.018,
-  'verify_email' => true, 
-  'direct_phone_number_only' => false,
-  'auto_drain' => true,
-  'keywords' => [
-      # keywords to include
-      { 'value' => '[company_name]', 'type' => 0 },
-  ],
-  'job_titles' => [
-      # job positions to include
-      { 'value' => 'Owner', 'positive' => true },
-      { 'value' => 'CEO', 'positive' => true },
-      { 'value' => 'Founder', 'positive' => true },
-      { 'value' => 'President', 'positive' => true },
-      { 'value' => 'Director', 'positive' => true },
-      { 'value' => 'Human Resources Manager', 'positive' => true },
-      { 'value' => 'HR Manager', 'positive' => true },
-      { 'value' => 'Recruiting Manager', 'positive' => true },
-      # job positions to exclude
-      { 'value' => 'Vice', 'positive' => false },
-    ],
-  #'states' => [
-  #    # locations to include
-  #    { 'value' => 'NC', 'positive' => true }, # North Carolina
-  #],
-  'company_headcounts' => [
-      # headcounts to include
-      { 'value' => '1 to 10', 'positive' => true },
-      { 'value' => '11 to 25', 'positive' => true },
-      { 'value' => '26 to 50', 'positive' => true },
-  ],
-}
+templ = SEARCH_TEMPLATE
+l.logf 'done'.green
 
 # creating the client
 l.logs "Creating the client... "
@@ -75,7 +39,7 @@ l.logf 'done'.green
 
 # list all files into the csv folder with name matching with /#{PARSER.value('files')}/ 
 l.logs "Loading files... "
-files = Dir.glob('../csv/*.csv').select {|f| f =~ /#{parser.value('files')}/}
+files = Dir.glob("../csv/#{id}.csv") #.select {|f| f =~ /#{parser.value('files')}/}
 l.logf 'done'.green + " (#{files.count.to_s.blue} files found)"
 
 files.each do |file|
