@@ -33,3 +33,12 @@ l.logs "Creating the client... "
 client = BlackStack::FreeLeadsData::API.new(FREELEADSDATA_API_KEY)
 l.logf 'done'.green
 
+# list all searches matching with 
+l.logs "List all searches... "
+ret = client.get("#{id} - ")
+if ret['status'] != 'success'
+  l.logf "Error: #{ret['success']}".red
+  exit
+end
+a = ret['searches']
+l.logf 'done'.green + " (#{a.size.to_s.blue} searches found)"
