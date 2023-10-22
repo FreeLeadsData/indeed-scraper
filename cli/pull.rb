@@ -121,14 +121,14 @@ l.logf 'done'.green + " (#{b.size.to_s.blue} records found)"
 
 l.logs "Appending indeed job position... "
 i = 0
+out = File.open("../out/#{id}.csv", "wb")
 b.each { |c|
   i += 1
-break if i > 10
   fname = c[2]
   lname = c[3]
   title = c[5]
   cname = c[10]
-  l.logs "#{i.to_s.blue}. #{fname.blue} #{lname.blue} - #{title.blue} @ #{cname.blue}... "
+  l.logs "#{i.to_s}. #{fname.blue} #{lname.blue} - #{title.blue} @ #{cname.blue}... "
   files = Dir.glob("../csv/*#{id}.csv")
   files.each { |f|
       # get all lines with company name
@@ -148,6 +148,9 @@ break if i > 10
           c << mergetag
           c << jobtitle
           c << jobpost
+          # write
+          out << c.to_csv
+          out.flush
           #
           break
       }
@@ -155,10 +158,4 @@ break if i > 10
   } # files.each
   l.logf 'done'.green + " (#{c[-2].blue} - #{c[-3].blue})"
 }
-
-# store the results into a CSV file
-l.logs "Storing results... "
-CSV.open("../out/#{id}.csv", "wb") do |csv|
-  csv << b
-end
-l.logf 'done'.green
+out.close
