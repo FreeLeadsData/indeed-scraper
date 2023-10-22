@@ -125,3 +125,10 @@ Such a command does the following:
 - join all the results into one single file.
 - remove duplications of (job position, company names) in the new file.
 - append the job position listed in indeed (if there are many, choosing the first one).
+
+Finally, and after the pull is done, find the CSV file.
+
+```bash
+cd ~/code/indeed-scraper
+ls ./out/demo.csv
+```

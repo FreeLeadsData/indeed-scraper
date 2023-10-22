@@ -123,6 +123,7 @@ l.logs "Appending indeed job position... "
 i = 0
 b.each { |c|
   i += 1
+break if i > 10
   fname = c[2]
   lname = c[3]
   title = c[5]
@@ -135,8 +136,8 @@ b.each { |c|
       jobtitle = nil
       jobpost = nil
       csv = CSV.parse(File.read(f), headers: true)
-      c = csv.select { |row| row.to_s.downcase.include?(cname.to_s.downcase) }
-      c.each { |row|
+      d = csv.select { |row| row.to_s.downcase.include?(cname.to_s.downcase) }
+      d.each { |row|
           jobpost = row[1]
           jobtitle = row[0]
           mergetag = openai(jobtitle)
@@ -147,8 +148,17 @@ b.each { |c|
           c << mergetag
           c << jobtitle
           c << jobpost
+          #
+          break
       }
       break if jobtitle && mergetag
   } # files.each
-  l.logf 'done'.green
+  l.logf 'done'.green + " (#{c[-2].blue} - #{c[-3].blue})"
 }
+
+# store the results into a CSV file
+l.logs "Storing results... "
+CSV.open("../out/#{id}.csv", "wb") do |csv|
+  csv << b
+end
+l.logf 'done'.green
