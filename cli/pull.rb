@@ -70,7 +70,7 @@ if ret['status'] != 'success'
 end
 a = ret['searches']
 l.logf 'done'.green + " (#{a.size.to_s.blue} searches found)"
-=begin
+
 # download all the exports
 l.logs "Downloading... "
 a.each { |h|
@@ -81,7 +81,7 @@ a.each { |h|
   l.logf 'done'.green
 }
 l.logf 'done'.green
-=end
+
 # bundle all CSV files into one single array
 l.logs "Bundling... "
 b = []
