@@ -116,7 +116,7 @@ Since you splitted the list of companies in the previous section, you have to do
 
 ```bash
 cd ~/code/indeed-scraper
-ruby join.rb tag=florida
+ruby pull.rb tag=florida
 ```
 
 Such a command does the following:

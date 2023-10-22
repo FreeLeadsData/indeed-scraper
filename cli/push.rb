@@ -23,7 +23,6 @@ l.log 'PUSH TO FREELEADSDATA'.yellow
 
 l.logs 'ID: ' 
 id = parser.value('id').to_s
-output_filename = "../csv/#{id}.csv"
 l.logf id.blue
 
 l.logs "Initializing variables... "
