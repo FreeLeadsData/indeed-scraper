@@ -5,6 +5,7 @@ require 'colorize'
 require 'csv'
 require 'pry'
 require "open-uri"
+require "openai"
 require 'freeleadsdata-api'
 require_relative '../config.rb'
 
@@ -126,6 +127,28 @@ b.each { |c|
   lname = c[3]
   title = c[5]
   cname = c[10]
-  l.logs "#{i.to_s.blue}. #{fname} #{lname} - #{title} @ #{cname}... "
+  l.logs "#{i.to_s.blue}. #{fname.blue} #{lname.blue} - #{title.blue} @ #{cname.blue}... "
+  files = Dir.glob("../csv/*#{id}.csv")
+  files.each { |f|
+      # get all lines with company name
+      mergetag = nil
+      jobtitle = nil
+      jobpost = nil
+      csv = CSV.parse(File.read(f), headers: true)
+      c = csv.select { |row| row.to_s.downcase.include?(cname.to_s.downcase) }
+      c.each { |row|
+          jobpost = row[1]
+          jobtitle = row[0]
+          mergetag = openai(jobtitle)
+          # update
+          #ai_processed_title = mergetag
+          #full_indeed_title = jobtitle
+          #indeed_post_url = jobpost
+          c << mergetag
+          c << jobtitle
+          c << jobpost
+      }
+      break if jobtitle && mergetag
+  } # files.each
   l.logf 'done'.green
 }
