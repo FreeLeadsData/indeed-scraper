@@ -76,21 +76,21 @@ nano ./config.rb
 First, create a text file with all the Indeed URLs you want to scrape.
 
 ```bash
-nano ~/code/indeed-scraper/urls/florida.txt
+nano ~/code/indeed-scraper/urls/demo.txt
 ```
 
 Second, run the scraping.
 
 ```bash
 cd ~/code/indeed-scraper
-ruby scrape.rb tag=florida
+ruby scrape.rb id=demo
 ```
 
 Finally, and after the scraping is done, find the CSV file.
 
 ```bash
 cd ~/code/indeed-scraper
-ls ./csv/florida.csv
+ls ./csv/demo.csv
 ```
 
 ## 4. Results Submission
@@ -101,7 +101,7 @@ The process of setting up **FreeLeadsData** searches for enrich your list of com
 
 ```bash
 cd ~/code/indeed-scraper
-ruby push.rb tag=florida
+ruby push.rb id=demo
 ```
 
 Such a command does the following:
@@ -116,7 +116,7 @@ Since you splitted the list of companies in the previous section, you have to do
 
 ```bash
 cd ~/code/indeed-scraper
-ruby pull.rb tag=florida
+ruby pull.rb id=demo
 ```
 
 Such a command does the following:
