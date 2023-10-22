@@ -3,8 +3,19 @@ require 'simple_cloud_logging'
 require 'blackstack-core'
 require 'colorize'
 require 'csv'
+require 'pry'
+require "open-uri"
 require 'freeleadsdata-api'
 require_relative '../config.rb'
+
+def download(url, id)
+  f = URI.open(url)
+  s = f.read
+  o = File.open("/tmp/#{id}.csv", "wb")
+  o.write(s)
+  o.close
+  f.close
+end
 
 # 
 parser = BlackStack::SimpleCommandLineParser.new(
@@ -42,3 +53,44 @@ if ret['status'] != 'success'
 end
 a = ret['searches']
 l.logf 'done'.green + " (#{a.size.to_s.blue} searches found)"
+=begin
+# download all the exports
+l.logs "Downloading... "
+a.each { |h|
+  l.logs "#{h['id'].blue}... "
+  url = h['export']['export_download_url']
+  sid = h['id']
+  download(url, sid)
+  l.logf 'done'.green
+}
+l.logf 'done'.green
+=end
+# bundle all CSV files into one single array
+l.logs "Bundling... "
+b = []
+a.each { |h|
+  l.logs "#{h['id'].blue}... "
+  sid = h['id']
+  x = CSV.read("/tmp/#{sid}.csv").to_a
+  x.shift # remove the header
+  b += x
+  l.logf 'done'.green
+}
+l.logf 'done'.green + " (#{b.size.to_s.blue} records found)"
+
+l.logs "Finding duplicates... "
+blacklist = b.select { |c| 
+  fname = c[2]
+  lname = c[3]
+  title = c[5]
+  cname = c[10]
+  b.select { |d|
+    title.strip.downcase == d[5].strip.downcase && 
+    cname.strip.downcase == d[10].strip.downcase
+  }.size > 1
+}
+l.logf 'done'.green + " (#{blacklist.size.to_s.blue} records found)"
+
+l.logs "Removing duplicates... "
+b = b - blacklist
+l.logf 'done'.green + " (#{b.size.to_s.blue} records found)"
