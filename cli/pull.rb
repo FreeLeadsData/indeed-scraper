@@ -8,6 +8,8 @@ require "open-uri"
 require 'freeleadsdata-api'
 require_relative '../config.rb'
 
+OPENAI_CLIENT = OpenAI::Client.new(access_token: OPENAI_API_KEY)
+
 def download(url, id)
   f = URI.open(url)
   s = f.read
@@ -15,6 +17,20 @@ def download(url, id)
   o.write(s)
   o.close
   f.close
+end
+
+def openai(title)
+  prompt = "Return string with 2 to 4 words that I can use to personalize a sentence like 'I saw you are looking for a (job title)'. The merge-tag must looks natural in the sentence. Just return the job title. Don't write the whole sentence. If many many titles are listed choose only one: #{title}"
+  ret = OPENAI_CLIENT.chat(
+      parameters: {
+          model: OPENAI_MODEL, # Required.
+          temperature: 0.5,
+          messages: [
+              { role: "user", content: prompt},
+          ], # Required.
+      }
+  )
+  ret['choices'][0]['message']['content']
 end
 
 # 
@@ -78,19 +94,38 @@ a.each { |h|
 }
 l.logf 'done'.green + " (#{b.size.to_s.blue} records found)"
 
-l.logs "Finding duplicates... "
+l.logs "Finding redundancies... "
 blacklist = b.select { |c| 
   fname = c[2]
   lname = c[3]
   title = c[5]
   cname = c[10]
   b.select { |d|
+    # diffrent names
+    (
+      fname.strip.downcase != d[2].strip.downcase ||
+      lname.strip.downcase != d[3].strip.downcase
+    ) &&
+    # but same title and company name
     title.strip.downcase == d[5].strip.downcase && 
     cname.strip.downcase == d[10].strip.downcase
   }.size > 1
 }
-l.logf 'done'.green + " (#{blacklist.size.to_s.blue} records found)"
-
-l.logs "Removing duplicates... "
 b = b - blacklist
 l.logf 'done'.green + " (#{b.size.to_s.blue} records found)"
+
+#l.logs "Removing duplications... "
+#y = b.map { |c| c[2].strip.downcase+c[3].strip.downcase+c[10].strip.downcase }.uniq
+#l.logf 'done'.green + " (#{b.size.to_s.blue} records found - #{y.size.to_s.blue} unique records)"
+
+l.logs "Appending indeed job position... "
+i = 0
+b.each { |c|
+  i += 1
+  fname = c[2]
+  lname = c[3]
+  title = c[5]
+  cname = c[10]
+  l.logs "#{i.to_s.blue}. #{fname} #{lname} - #{title} @ #{cname}... "
+  l.logf 'done'.green
+}

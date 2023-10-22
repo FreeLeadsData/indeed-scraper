@@ -1,5 +1,8 @@
 FREELEADSDATA_API_KEY = 'a9c089ef-****-****-****-********7f7e'
 
+OPENAI_API_KEY = '****DDAIr'
+MODEL_TO_USE = 'gpt-3.5-turbo-16k-0613'
+
 SEARCH_TEMPLATE = {
     #'name' => ,
     'status' => true,
