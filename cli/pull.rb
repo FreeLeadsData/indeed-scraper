@@ -140,7 +140,15 @@ b.each { |c|
       d.each { |row|
           jobpost = row[1]
           jobtitle = row[0]
-          mergetag = openai(jobtitle)
+          
+          mergetag = nil
+          while mergetag.nil?
+            begin
+              mergetag = openai(jobtitle)
+            rescue => e
+              puts '.'
+            end
+          end
           # update
           #ai_processed_title = mergetag
           #full_indeed_title = jobtitle
