@@ -1,8 +1,8 @@
-!/urls/demo.txt
-/urls/*.txt
+#!/urls/demo.txt
+#/urls/*.txt
 
-!/csv/demo.csv
-/csv/*.csv
+#!/csv/demo.csv
+#/csv/*.csv
 
 *.log
 *.json
