@@ -135,17 +135,21 @@ b.each { |c|
       mergetag = nil
       jobtitle = nil
       jobpost = nil
+print '1'
       csv = CSV.parse(File.read(f), headers: true)
+print '2'
       d = csv.select { |row| row.to_s.downcase.include?(cname.to_s.downcase) }
+print '3'
       d.each { |row|
           jobpost = row[1]
           jobtitle = row[0]
-          mergetag = nil
+#          mergetag = nil
           while mergetag.nil?
             begin
               mergetag = openai(jobtitle)
             rescue => e
               puts '.'
+              sleep(10)
             end
           end
           # update
