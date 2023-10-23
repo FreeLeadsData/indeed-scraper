@@ -140,7 +140,6 @@ b.each { |c|
       d.each { |row|
           jobpost = row[1]
           jobtitle = row[0]
-          
           mergetag = nil
           while mergetag.nil?
             begin
