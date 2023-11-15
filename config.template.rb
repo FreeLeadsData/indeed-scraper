@@ -3,6 +3,16 @@ FREELEADSDATA_API_KEY = 'a9c089ef-****-****-****-********7f7e'
 OPENAI_API_KEY = '****DDAIr'
 MODEL_TO_USE = 'gpt-3.5-turbo-16k-0613'
 
+# For scraping Indeed, we recommend to use StormProxies' Backconnect Rotating Proxies,
+# 1 Access IP at $14/month.
+# https://stormproxies.com/rotating_reverse_proxies.html
+# 
+PROXY = {
+    :ip => 'xxx.xxx.xxx.xxx',
+    :port_from => 4000,
+    :port_to => 4000,
+}
+
 SEARCH_TEMPLATE = {
     #'name' => ,
     'status' => true,

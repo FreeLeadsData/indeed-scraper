@@ -30,7 +30,7 @@ output_filename = "../csv/#{id}.csv"
 l.logf id.blue
 
 l.logs 'initialize IndeedBot... '
-bot = BlackStack::Bots::Indeed.new(nil)
+bot = BlackStack::Bots::Indeed.new(PROXY)
 l.logf 'done'.green
 
 # load urls from ../urls/#{id}.txt
@@ -54,11 +54,12 @@ a.each { |s|
                 }        
             }
             l.logf 'done'.green + " (#{ret.length.to_s.blue} results)"
+
+            # increase start
+            start += 10
         rescue => e
             l.logf "error: #{e.message}".red
         end
-        # increase start
-        start += 10
     end
     l.logf 'done'.green
 }
