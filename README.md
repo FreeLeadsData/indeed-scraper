@@ -20,7 +20,6 @@
 4. [Results Submission](#4-results-submission)
 5. [Enrichment Curation](#5-enrichment-curation)
 
-
 ## 1. Setup Environment
 
 MySaaS has been developed and tested on the following environment:
@@ -82,7 +81,10 @@ nano ~/code/indeed-scraper/urls/demo.txt
 Second, run the scraping.
 
 ```bash
-cd ~/code/indeed-scraper
+export RUBYLIB=~/code/freeleadsdata
+
+```bash
+cd ~/code/freeleadsdata/indeed-scraper/cli
 ruby scrape.rb id=demo
 ```
 
