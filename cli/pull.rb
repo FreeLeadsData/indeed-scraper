@@ -150,6 +150,10 @@ l.logf 'done'.green + " (#{d.size.to_s.blue} unique records)"
 l.logs "Appending indeed job position... "
 i = 0
 out = File.open("../out/#{id}.csv", "wb")
+## add header
+out << ['lead_id', 'search_id', 'first_name', 'last_name', 'email', 'job_position', 'seniority', 'role', 'linkedin_url', 'state', 'company_name', 'company_domain', 'company_phone', 'company_industry', 'company_sic', 'company_linkedin_url', 'company_revenue', 'company_headcount', '', '', '', '', '', 'record_fee', '', 'indeed_job_position_merge_tag_processed_with_gpt', 'indeed_job_position_original', 'indeed_post_url' ].to_csv
+out.flush
+## add rows
 d.each { |c|
   i += 1
   fname = c[2]
