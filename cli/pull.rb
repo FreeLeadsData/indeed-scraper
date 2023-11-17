@@ -77,8 +77,12 @@ a.each { |h|
   l.logs "#{h['id'].blue}... "
   url = h['export']['export_download_url']
   sid = h['id']
-  download(url, sid)
-  l.logf 'done'.green
+  if url
+    download(url, sid)
+    l.logf 'done'.green
+  else
+    l.logf 'skipped'.yellow # report not generated yet
+  end
 }
 l.logf 'done'.green
 
@@ -88,10 +92,15 @@ b = []
 a.each { |h|
   l.logs "#{h['id'].blue}... "
   sid = h['id']
-  x = CSV.read("/tmp/#{sid}.csv").to_a
-  x.shift # remove the header
-  b += x
-  l.logf 'done'.green
+  fname = "/tmp/#{sid}.csv"
+  if File.exist?(fname)
+    x = CSV.read(fname).to_a
+    x.shift # remove the header
+    b += x
+    l.logf 'done'.green
+  else
+    l.logf 'skipped'.yellow # report not generated yet
+  end
 }
 l.logf 'done'.green + " (#{b.size.to_s.blue} records found)"
 
@@ -119,10 +128,29 @@ l.logf 'done'.green + " (#{b.size.to_s.blue} records found)"
 #y = b.map { |c| c[2].strip.downcase+c[3].strip.downcase+c[10].strip.downcase }.uniq
 #l.logf 'done'.green + " (#{b.size.to_s.blue} records found - #{y.size.to_s.blue} unique records)"
 
+# clean up duplicated emaills and duplicated company contacts
+# reference: https://github.com/FreeLeadsData/indeed-scraper/issues/7
+l.logs "Removing duplications... "
+c = b.map { |x| x[11].downcase.strip }.uniq # unique list of company domains
+d = []
+c.each { |s|
+  e = b.select { |x| s.downcase.strip == x[11].downcase.strip }
+  y = e.select { |x| x[5] =~ /ceo/i }.first
+  y = e.select { |x| x[5] =~ /owner/i }.first unless y
+  y = e.select { |x| x[5] =~ /founder/i }.first unless y
+  y = e.select { |x| x[5] =~ /president/i }.first unless y
+  y = e.select { |x| x[5] =~ /director/i }.first unless y
+  y = e.select { |x| x[5] =~ /manager/i }.first unless y
+  y = e.first unless y
+  d << y
+}
+l.logf 'done'.green + " (#{d.size.to_s.blue} unique records)"
+
+# write
 l.logs "Appending indeed job position... "
 i = 0
 out = File.open("../out/#{id}.csv", "wb")
-b.each { |c|
+d.each { |c|
   i += 1
   fname = c[2]
   lname = c[3]
@@ -135,11 +163,8 @@ b.each { |c|
       mergetag = nil
       jobtitle = nil
       jobpost = nil
-print '1'
       csv = CSV.parse(File.read(f), headers: true)
-print '2'
       d = csv.select { |row| row.to_s.downcase.include?(cname.to_s.downcase) }
-print '3'
       d.each { |row|
           jobpost = row[1]
           jobtitle = row[0]
