@@ -45,7 +45,11 @@ a.each { |s|
     while start <= 640
         l.logs "start=#{start}... "
         begin
-            url = "#{search}&start=#{start}"
+            # build url
+            uri = URI.parse(search)
+            uri.query = [uri.query, "start=#{start}"].compact.join('&')
+            url = uri.to_s
+            # scrape results
             ret = bot.results(url)
             CSV.open("./#{output_filename}", 'a+b') { |csv|
                 csv << ['title', 'url', 'company', 'location', 'salary', 'posted', 'snippets']
