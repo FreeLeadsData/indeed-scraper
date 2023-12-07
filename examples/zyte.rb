@@ -16,6 +16,13 @@ require_relative './config.rb' # ZAITE_API_KEY is in this file - see above
 # - sudo apt install jq
 # - sudo apt install curl
 # 
+# Zyte Pricing:
+# - https://www.zyte.com/pricing/
+#
+# Zyte API:
+# - https://docs.zyte.com/zyte-api/usage/http.html
+# 
+
 
 l = BlackStack::LocalLogger.new('zyte.log')
 
