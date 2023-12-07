@@ -18,6 +18,7 @@ require_relative './config.rb' # ZAITE_API_KEY is in this file - see above
 # 
 # Zyte Pricing:
 # - https://www.zyte.com/pricing/
+# - 10 Indeed searches = 640 pages ~= 0.25$
 #
 # Zyte API:
 # - https://docs.zyte.com/zyte-api/usage/http.html
