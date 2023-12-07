@@ -12,4 +12,6 @@
 
 config.rb
 
+/examples/data/*.html
+
 Gemfile.lock
